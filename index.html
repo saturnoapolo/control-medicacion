@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Control Caja 30 - v1.3.2 Lab</title><meta name="apple-mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Control Caja 30 - v1.3.3</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; user-select: none; -webkit-user-select: none; }
         body { background: #111; color: #FFF; display: flex; flex-direction: column; min-height: 100vh; justify-content: space-between; padding: 20px; }
         
-        /* v1.3.2: Rediseño de textos superiores achicados y limpios */
         .header-fecha { text-align: center; font-size: 1.8rem; font-weight: bold; margin-top: 5px; text-transform: uppercase; color: #A0A0A0; }
         .contador-texto { font-size: 4rem; font-weight: 900; text-align: center; margin: 10px 0 0 0; color: #FFF; }
         .alacena-texto { text-align: center; font-size: 1.3rem; color: #FF9500; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
         
-        /* v1.3.2: Estilo para la nueva fila estática de fecha fija */
         .fila-fecha-fija { text-align: center; font-size: 1.3rem; color: #5AC8FA; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; background: #151515; padding: 10px; border-radius: 15px; border: 1px solid #333; }
         
         .boton-toma { width: 100%; height: 38vh; border-radius: 40px; border: none; font-size: 3.5rem; font-weight: bold; text-transform: uppercase; color: #FFF; box-shadow: 0 15px 30px rgba(0,0,0,.5); cursor: pointer; }
@@ -22,14 +22,12 @@
         .modal-admin { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.95); padding: 25px; flex-direction: column; justify-content: flex-start; z-index: 999; overflow-y: auto; }
         .btn-admin-accion { width: 100%; padding: 18px; font-size: 1.5rem; font-weight: bold; margin: 6px 0; border: 1px solid #444; border-radius: 15px; color: #FFF; background: #222; text-transform: uppercase; cursor: pointer; }
         
-        /* v1.3.2: Estilos para el nuevo menú desplegable de Alarmas en Admin */
+        /* v1.3.3: Estructura del contenedor de alarmas limpia */
         .seccion-alarmas-container { border: 1px solid #444; padding: 15px; border-radius: 15px; margin: 8px 0; background: #1a1a1a; }
         .menu-desplegable-alarmas { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; }
-        .subopcion-alarma { margin-bottom: 20px; text-align: left; }
+        .subopcion-alarma { margin-bottom: 5px; text-align: left; }
         .subopcion-alarma h4 { font-size: 1.2rem; color: #FFF; margin-bottom: 5px; text-transform: uppercase; }
         .subopcion-alarma p { font-size: 0.9rem; color: #888; margin-bottom: 8px; }
-        .input-email-admin { width: 100%; padding: 12px; font-size: 1.1rem; background: #111; color: #FFF; border: 1px solid #444; border-radius: 10px; margin-bottom: 8px; }
-        .btn-guardar-email { padding: 10px 20px; font-size: 1.1rem; font-weight: bold; background: #34C759; color: #FFF; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
         
         .popup-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 90%; background: #222; border: 3px solid #34C759; border-radius: 30px; padding: 30px; text-align: center; z-index: 1000; }
         .popup-box p { font-size: 2.2rem; font-weight: bold; margin-bottom: 25px; }
@@ -38,8 +36,6 @@
         .status-sync { text-align: center; font-size: 1rem; color: #555; margin-top: 5px; font-weight: bold; }
         .historial-box { border: 1px solid #FFD700; border-radius: 15px; padding: 15px; margin-top: 15px; background: #151515; max-height: 20vh; overflow-y: auto; }
         .historial-item { font-size: 1.1rem; padding: 8px 0; border-bottom: 1px solid #222; color: #DDD; text-align: left; }
-        
-        /* v1.3.2: Color azul para reflejar la versión de laboratorio actual */
         .version-marca { text-align: center; font-size: 1rem; color: #5AC8FA; font-weight: bold; margin-top: 5px; }
         
         .loading-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 60vh; text-align: center; }
@@ -50,26 +46,25 @@
 <body>
     <div id="vistaContenido" style="display: none;">
         <div>
-            <!-- v1.3.2: Interfaz compacta y scannable -->
             <div id="fechaReal" class="header-fecha">-- / -- / ----</div>
             <div id="contadorToma" class="contador-texto">TOMA 1 / 30</div>
             <div id="alacenaResto" class="alacena-texto">Comprimidos restantes = 29</div>
             
-            <!-- v1.3.2: Inyección única forzada de la fecha de finalización simulada -->
-            <div class="fila-fecha-fija">📅 FIN DE CAJA: Sábado 14 de Noviembre</div>
+            <!-- v1.3.3: Inyección dinámica del string congelado -->
+            <div id="elementoFechaFija" class="fila-fecha-fija">📅 FIN DE CAJA: Cargando...</div>
             
             <div id="statusSync" class="status-sync">Base de datos conectada</div>
         </div>
         <button id="mainBoton" class="boton-toma boton-pendiente" onclick="ejecutarToma()">PASTILLA PENDIENTE</button>
     </div>
+
     <div id="vistaCargando" class="loading-container" style="display: flex;">
         <div class="loading-spinner">ACTUALIZANDO...</div>
         <div style="color: #555; margin-top: 15px; font-weight: bold; font-size: 1.2rem;">Por favor, espere un instante</div>
     </div>
+
     <div class="panel-admin-gatillo" onclick="solicitarAccesoAdmin()">• PANEL ADMIN ACCESIBILIDAD •</div>
-    
-    <!-- Marca de versión actualizada -->
-    <div class="version-marca">v.1.3.2</div>
+    <div class="version-marca">v1.3.3</div>
     
     <div id="modalAdmin" class="modal-admin">
         <h2 style="font-size:2rem; text-align:center; margin-bottom:15px; color:#FFD700; text-transform:uppercase;">Panel de Titanio (Córdoba)</h2>
@@ -78,24 +73,14 @@
         <button class="btn-admin-accion" style="color:#FF9500;" onclick="adminCorregirToma()">CORREGIR NÚMERO DE TOMA A MANO</button>
         <button class="btn-admin-accion" style="color:#5AC8FA;" onclick="adminResetearCaja()">INICIAR CAJA NUEVA</button>
         
-        <!-- v1.3.2: Nuevo bloque contenedor de configuración de Alarmas -->
+        <!-- v1.3.3: Bloque de alarmas preservado solo con Incidencias pendientes -->
         <div class="seccion-alarmas-container">
             <button class="btn-admin-accion" style="color:#FFD700; margin:0; border:none; background:transparent;" onclick="toggleMenuAlarmas()">🔔 CONFIGURAR ALARMAS ▾</button>
-            
             <div id="menuDesplegableAlarmas" class="menu-desplegable-alarmas">
-                <!-- Subopción 1: Mi Notificación (Totalmente Activa) -->
-                <div class="subopcion-alarma">
-                    <h4>📩 Mi Notificación (Aviso de Toma Positiva)</h4>
-                    <p>Escribe el correo donde recibirás el aviso con la fecha y hora de la toma correcta de tu papá.</p>
-                    <input type="email" id="emailNotificacionAdmin" class="input-email-admin" placeholder="ejemplo@correo.com">
-                    <button class="btn-guardar-email" onclick="adminGuardarConfiguracionMail()">Aceptar</button>
-                </div>
-                
-                <!-- Subopción 2: Incidencias (Inactiva para v1.3.3) -->
                 <div class="subopcion-alarma" style="opacity: 0.4;">
                     <h4>⚠️ Incidencias (Próxima Versión)</h4>
                     <p>Circuito lógico para alertas de olvido, disparador de soplete de audio y botón de posponer 15 minutos.</p>
-                    <button class="btn-guardar-email" disabled style="background:#444; cursor:not-allowed;">Configurar (Próximamente)</button>
+                    <button class="btn-admin-accion" disabled style="background:#444; cursor:not-allowed; font-size:1.1rem; padding:10px;">Configurar (Próximamente)</button>
                 </div>
             </div>
         </div>
@@ -115,9 +100,19 @@
     <script>
         const SUPABASE_URL = "https://ztcrgkmasdctmkmstinv.supabase.co";
         const SUPABASE_KEY = "sb_publishable_PvqWAA63g4M8W4ak61x0ow_EDc_CSTi";
-        let estadoApp = { tomaActual: 1, tomadoHoy: false, ultimaFechaToma: "", emailAlerta: "" };
+        
+        // v1.3.3: Estructura de estado limpia con la fecha inicial fija del 14 de Noviembre
+        let estadoApp = { 
+            tomaActual: 1, 
+            tomadoHoy: false, 
+            ultimaFechaToma: "", 
+            fechaFinConstante: "Sábado 14 de Noviembre" 
+        };
         let sistemaCargando = true; 
-        function obtenerDiaBiologico() { return new Date(new Date().getTime() - (4 * 60 * 60 * 1000)).toDateString(); }
+        
+        function obtenerDiaBiologico() { 
+            return new Date(new Date().getTime() - (4 * 60 * 60 * 1000)).toDateString(); 
+        }
         
         async function cargarSistema() {
             sistemaCargando = true; 
@@ -125,9 +120,6 @@
             const d = localStorage.getItem('controlCaja30_data'); 
             if (d) { 
                 estadoApp = JSON.parse(d);
-                if(estadoApp.emailAlerta && document.getElementById('emailNotificacionAdmin')) {
-                    document.getElementById('emailNotificacionAdmin').value = estadoApp.emailAlerta;
-                }
             }
             document.getElementById('fechaReal').innerText = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'short' });
             await verificarUltimoEstadoNube(); 
@@ -137,7 +129,10 @@
             renderizarInterfaz(); 
         }
         
-        function guardarSistema() { localStorage.setItem('controlCaja30_data', JSON.stringify(estadoApp)); renderizarInterfaz(); }
+        function guardarSistema() { 
+            localStorage.setItem('controlCaja30_data', JSON.stringify(estadoApp)); 
+            renderizarInterfaz(); 
+        }
         
         async function verificarCambioDeDiaAutomático() { 
             const horaActual = new Date().getHours();
@@ -151,27 +146,12 @@
             } else if (estadoApp.ultimaFechaToma !== obtenerDiaBiologico() && !estadoApp.tomadoHoy) {
                 if (estadoApp.tomaActual === 30) {
                     setTimeout(() => { document.getElementById('popupNuevaCaja').style.display = 'block'; }, 500);
-                } else {
-                    if (horaActual >= 0 && horaActual < 4) {
-                        const yaTomado = await chequearSiExisteTomadoEnNube(estadoApp.tomaActual);
-                        if (!yaTomado) { await enviarIncidenciaANube(); }
-                    }
                 }
                 if (horaActual >= 0 && horaActual < 4) {
                     estadoApp.ultimaFechaToma = obtenerDiaBiologico();
                     guardarSistema();
                 }
             }
-        }
-        
-        async function chequearSiExisteTomadoEnNube(numToma) {
-            try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/tomas?numero_toma=eq.${numToma}&estado=eq.TOMADO`, {
-                    method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                });
-                if (res.ok) { const datos = await res.json(); return datos.length > 0; }
-            } catch(e){}
-            return false;
         }
         
         function renderizarInterfaz() {
@@ -187,17 +167,22 @@
             }
             const b = document.getElementById('mainBoton');
             document.getElementById('contadorToma').innerText = `TOMA ${estadoApp.tomaActual} / 30`;
-            
-            /* v1.3.2: Texto simplificado y directo para el bloque scannable */
             document.getElementById('alacenaResto').innerText = `Comprimidos restantes = ${30 - estadoApp.tomaActual}`;
             
-            if (estadoApp.tomadoHoy) { b.innerText = "✓ TOMADO"; b.className = "boton-toma boton-tomado"; b.disabled = true; }
-            else { b.innerText = "PASTILLA PENDIENTE"; b.className = "boton-toma boton-pendiente"; b.disabled = false; }
+            // v1.3.3: Renderizado directo de la variable inmutable congelada en localStorage
+            document.getElementById('elementoFechaFija').innerText = `📅 FIN DE CAJA: ${estadoApp.fechaFinConstante}`;
             
-            if(estadoApp.emailAlerta && document.getElementById('emailNotificacionAdmin')) {
-                document.getElementById('emailNotificacionAdmin').value = estadoApp.emailAlerta;
+            if (estadoApp.tomadoHoy) { 
+                b.innerText = "✓ TOMADO"; 
+                b.className = "boton-toma boton-tomado"; 
+                b.disabled = true; 
+            } else { 
+                b.innerText = "PASTILLA PENDIENTE"; 
+                b.className = "boton-toma boton-pendiente"; 
+                b.disabled = false; 
             }
         }
+        
         async function verificarUltimoEstadoNube() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/tomas?select=*&order=numero_toma.desc,id.desc&limit=1`, {
@@ -220,10 +205,6 @@
                                 if (ult.numero_toma < 30) { estadoApp.tomaActual = ult.numero_toma + 1; }
                                 estadoApp.tomadoHoy = false; 
                             }
-                        } else if (ult.estado.startsWith("INCIDENCIA")) {
-                            estadoApp.tomaActual = ult.numero_toma;
-                            estadoApp.tomadoHoy = false;
-                            if (diaBioToma === obtenerDiaBiologico()) { estadoApp.ultimaFechaToma = diaBioToma; }
                         } else { 
                             estadoApp.tomaActual = ult.numero_toma;
                             estadoApp.tomadoHoy = false; 
@@ -232,7 +213,6 @@
                 }
             } catch (e) {}
         }
-        
         async function enviarDatosASupabase(estForzado) {
             const estFinal = estForzado || (estadoApp.tomadoHoy ? "TOMADO" : "PENDIENTE"); 
             document.getElementById('statusSync').innerText = "Sincronizando bits...";
@@ -245,32 +225,17 @@
                         'Content-Type': 'application/json', 
                         'Prefer': 'resolution=merge-duplicates,return=minimal' 
                     },
-                    body: JSON.stringify({ numero_toma: estadoApp.tomaActual, estado: estFinal, fecha: new Date().toISOString().split('T')[0] })
+                    body: JSON.stringify({ 
+                        numero_toma: estadoApp.tomaActual, 
+                        estado: estFinal, 
+                        fecha: new Date().toISOString().split('T')[0] 
+                    })
                 });
                 document.getElementById('statusSync').innerText = r.ok ? "✓ Sincronizado en la nube" : "Error de red";
-                
-                /* v1.3.2: Simulación del envío de mail por consola si la toma es correcta */
-                if(r.ok && estFinal === "TOMADO" && estadoApp.emailAlerta) {
-                    console.log(`[v1.3.2 - SIMULACIÓN MAIL] Notificación enviada a: ${estadoApp.emailAlerta}. Motivo: Toma positiva registrada con éxito.`);
-                }
-                
                 if(r.ok) cargarHistorialDesdeNube();
-            } catch (e) { document.getElementById('statusSync').innerText = "Modo Offline - Local"; }
-        }
-        
-        async function enviarIncidenciaANube() {
-            try {
-                await fetch(`${SUPABASE_URL}/rest/v1/tomas`, {
-                    method: 'POST',
-                    headers: { 
-                        'apikey': SUPABASE_KEY, 
-                        'Authorization': `Bearer ${SUPABASE_KEY}`, 
-                        'Content-Type': 'application/json', 
-                        'Prefer': 'resolution=merge-duplicates,return=minimal' 
-                    },
-                    body: JSON.stringify({ numero_toma: estadoApp.tomaActual, estado: "INCIDENCIA: No se tomó comprimido", fecha: new Date().toISOString().split('T')[0] })
-                });
-            } catch (e) {}
+            } catch (e) { 
+                document.getElementById('statusSync').innerText = "Modo Offline - Local"; 
+            }
         }
         
         async function cargarHistorialDesdeNube() {
@@ -293,15 +258,35 @@
             } catch (e) { hLista.innerHTML = "<div style='color:#FF3B30;text-align:center;'>Error al leer la nube.</div>"; }
         }
         
-        function ejecutarToma() { if (!estadoApp.tomadoHoy) { estadoApp.tomadoHoy = true; estadoApp.ultimaFechaToma = obtenerDiaBiologico(); guardarSistema(); enviarDatosASupabase(); } }
+        function ejecutarToma() { 
+            if (!estadoApp.tomadoHoy) { 
+                estadoApp.tomadoHoy = true; 
+                estadoApp.ultimaFechaToma = obtenerDiaBiologico(); 
+                guardarSistema(); 
+                enviarDatosASupabase(); 
+            } 
+        }
         
         async function procesarNuevaCaja(a) { 
             document.getElementById('popupNuevaCaja').style.display = 'none'; 
-            if (a) { 
+            if (a) {
+                // v1.3.3: Ejecución de la fórmula matemática dinámica (+29 días reales)
+                let fechaHoy = new Date();
+                let tiempoFin = fechaHoy.getTime() + (29 * 24 * 60 * 60 * 1000);
+                let objetoFechaFin = new Date(tiempoFin);
+                
+                // Formateo limpio en formato texto y congelación persistente de la variable
+                let opcionesFormato = { weekday: 'long', day: 'numeric', month: 'long' };
+                let stringFormateado = objetoFechaFin.toLocaleDateString('es-AR', opcionesFormato);
+                
+                // Primera letra en mayúscula para armonía visual
+                estadoApp.fechaFinConstante = stringFormateado.charAt(0).toUpperCase() + stringFormateado.slice(1);
+                
                 estadoApp.tomaActual = 1; 
                 estadoApp.tomadoHoy = false; 
                 estadoApp.ultimaFechaToma = ""; 
                 guardarSistema(); 
+                
                 document.getElementById('statusSync').innerText = "Vaciando historial...";
                 try {
                     await fetch(`${SUPABASE_URL}/rest/v1/tomas?id=gt.0`, {
@@ -312,29 +297,38 @@
             } 
         }
         
-        function solicitarAccesoAdmin() { const p = prompt("Ingrese clave de administrador:"); if (p === "cordoba2027") { abrirAdmin(); cargarHistorialDesdeNube(); } else if (p !== null) { alert("Clave incorrecta. Trinchera bloqueada."); } }
+        function solicitarAccesoAdmin() { 
+            const p = prompt("Ingrese clave de administrador:"); 
+            if (p === "cordoba2027") { abrirAdmin(); cargarHistorialDesdeNube(); } 
+            else if (p !== null) { alert("Clave incorrecta. Trinchera bloqueada."); } 
+        }
+        
         function abrirAdmin() { document.getElementById('modalAdmin').style.display = 'flex'; }
         function cerrarAdmin() { document.getElementById('modalAdmin').style.display = 'none'; renderizarInterfaz(); }
         function adminForzarVerde() { estadoApp.tomadoHoy = true; estadoApp.ultimaFechaToma = obtenerDiaBiologico(); guardarSistema(); enviarDatosASupabase(); cerrarAdmin(); }
         function adminForzarRojo() { estadoApp.tomadoHoy = false; estadoApp.ultimaFechaToma = ""; guardarSistema(); enviarDatosASupabase("PENDIENTE"); cerrarAdmin(); }
-        function adminCorregirToma() { const n = prompt("Toma (1-30):", estadoApp.tomaActual); if (n && parseInt(n,10) >= 1 && parseInt(n,10) <= 30) { estadoApp.tomaActual = parseInt(n,10); guardarSistema(); enviarDatosASupabase(); } cerrarAdmin(); }
-        function adminResetearCaja() { if (confirm("¿Confirmás el inicio de la nueva caja?")) { procesarNuevaCaja(true); } else { cerrarAdmin(); } }
         
-        /* v1.3.2: Funciones exclusivas del submenú desplegable de alarmas */
+        function adminCorregirToma() { 
+            const n = prompt("Toma (1-30):", estadoApp.tomaActual); 
+            if (n && parseInt(n,10) >= 1 && parseInt(n,10) <= 30) { 
+                estadoApp.tomaActual = parseInt(n,10); 
+                guardarSistema(); 
+                enviarDatosASupabase(); 
+            } 
+            cerrarAdmin(); 
+        }
+        
+        function adminResetearCaja() { 
+            if (confirm("¿Confirmás el inicio de la nueva caja?")) { 
+                procesarNuevaCaja(true); 
+            } else { 
+                cerrarAdmin(); 
+            } 
+        }
+        
         function toggleMenuAlarmas() {
             const menu = document.getElementById('menuDesplegableAlarmas');
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        function adminGuardarConfiguracionMail() {
-            const email = document.getElementById('emailNotificacionAdmin').value;
-            if (!email) {
-                alert("Por favor, introduce un correo electrónico válido.");
-                return;
-            }
-            estadoApp.emailAlerta = email;
-            guardarSistema();
-            alert(`¡Configurado con éxito! Destino de alertas guardado: ${email}`);
         }
         
         window.onload = cargarSistema; 
@@ -342,4 +336,3 @@
     </script>
 </body>
 </html>
-
