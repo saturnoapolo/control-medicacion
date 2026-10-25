@@ -261,7 +261,7 @@
                 }
                 
                 let diasRestantesParaFin = 30 - numTomaActual;
-                let fechaEstimadaFin = new Date(fechaBase.getTime() + (diasRestantesParaFin * 24 * 60 * 60 * 1000));
+                let fechaEstimadaFin = new Date(fechaBase.getTime() + (diasRestantesParaFin * 24 * 60 * 60 * 1000) - (24 * 60 * 60 * 1000)) ;
                 
                 let opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long' };
                 let fechaFormateada = fechaEstimadaFin.toLocaleDateString('es-AR', opcionesFecha);
