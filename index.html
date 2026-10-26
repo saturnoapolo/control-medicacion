@@ -247,36 +247,13 @@
         
         function actualizarCalculoFechaFinCaja(numTomaActual, fechaRegistroISO) {
             try {
-                if (!fechaRegistroISO || fechaRegistroISO === "undefined") {
-                    document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
-                    return;
-                }
-                
-                let fechaBase = new Date(fechaRegistroISO);
-                if (isNaN(fechaBase.getTime())) {
-                    document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
-                    return;
-                }
-                
-                // BLINDAJE v1.3.5: Calculamos los 29 días fijos siempre desde la Toma 1 original
-                // Esto congela la fecha para todo el mes y evita que sea una variable marchante.
-                let diasTotalesCaja = 30 - 1; 
-                let fechaEstimadaFin = new Date(fechaBase.getTime() + (diasTotalesCaja * 24 * 60 * 60 * 1000));
-                
-                // Si por el huso horario desborda, forzamos el límite real del calendario
-                if (fechaEstimadaFin.getDate() === 15) {
-                    fechaEstimadaFin.setDate(14);
-                }
-                
-                let opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long' };
-                let fechaFormateada = fechaEstimadaFin.toLocaleDateString('es-AR', opcionesFecha);
-                
-                fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-                document.getElementById('fechaFinCajaContenedor').innerText = `⏳ FIN DE CAJA: ${fechaFormateada}`;
+                // SOLUCIÓN DEFINITIVA v1.3.5: Texto fijo e inmutable MODIFICAR ESTOS 2 RENGLONES
+                document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
             } catch(e) {
                 document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
             }
         }
+   
    
         async function enviarDatosASupabase(estForzado) {
             const estFinal = estForzado || (estadoApp.tomadoHoy ? "TOMADO" : "PENDIENTE"); 
