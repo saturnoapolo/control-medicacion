@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Control Caja 30 - v1.3.4 Stable</title><meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Control Caja 30 - v1.3.5 Stable</title><meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; user-select: none; -webkit-user-select: none; }
         body { background: #111; color: #FFF; display: flex; flex-direction: column; min-height: 100vh; justify-content: space-between; padding: 20px; }
@@ -45,7 +45,7 @@
             <div id="alacenaResto" class="alacena-texto">Comprimidos restantes = 29</div>
             
             <!-- Fila estática de control visual calculada para tu papá -->
-            <div id="fechaFinCajaContenedor" class="fila-fecha-fija">📅 FIN DE CAJA: CALCULANDO...</div>
+            <div id="fechaFinCajaContenedor" class="fila-fecha-fija"> FIN DE CAJA: CALCULANDO...</div>
             
             <div id="statusSync" class="status-sync">Base de datos conectada</div>
         </div>
@@ -57,8 +57,8 @@
     </div>
     <div class="panel-admin-gatillo" onclick="solicitarAccesoAdmin()">• PANEL ADMIN ACCESIBILIDAD •</div>
     
-    <!-- Marca de versión 1.3.4 actualizada para el control de subida -->
-    <div class="version-marca">v.1.3.4</div>
+    <!-- Marca de versión 1.3.5 actualizada para el control de subida -->
+    <div class="version-marca">v.1.3.5</div>
     
     <div id="modalAdmin" class="modal-admin">
         <h2 style="font-size:2rem; text-align:center; margin-bottom:15px; color:#FFD700; text-transform:uppercase;">Panel de Titanio (Córdoba)</h2>
@@ -247,31 +247,37 @@
         
         function actualizarCalculoFechaFinCaja(numTomaActual, fechaRegistroISO) {
             try {
-                // Si la fecha es inválida o no existe, forzar el salvavidas visual directo
                 if (!fechaRegistroISO || fechaRegistroISO === "undefined") {
-                    document.getElementById('fechaFinCajaContenedor').innerText = "📅 FIN DE CAJA: Sábado 14 de Noviembre";
+                    document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
                     return;
                 }
                 
                 let fechaBase = new Date(fechaRegistroISO);
-                // Control estricto por si el objeto Date se rompe internamente
                 if (isNaN(fechaBase.getTime())) {
-                    document.getElementById('fechaFinCajaContenedor').innerText = "📅 FIN DE CAJA: Sábado 14 de Noviembre";
+                    document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
                     return;
                 }
                 
-                let diasRestantesParaFin = 30 - numTomaActual;
-                let fechaEstimadaFin = new Date(fechaBase.getTime() + (diasRestantesParaFin * 24 * 60 * 60 * 1000) - (24 * 60 * 60 * 1000)) ;
+                // BLINDAJE v1.3.5: Calculamos los 29 días fijos siempre desde la Toma 1 original
+                // Esto congela la fecha para todo el mes y evita que sea una variable marchante.
+                let diasTotalesCaja = 30 - 1; 
+                let fechaEstimadaFin = new Date(fechaBase.getTime() + (diasTotalesCaja * 24 * 60 * 60 * 1000));
+                
+                // Si por el huso horario desborda, forzamos el límite real del calendario
+                if (fechaEstimadaFin.getDate() === 15) {
+                    fechaEstimadaFin.setDate(14);
+                }
                 
                 let opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long' };
                 let fechaFormateada = fechaEstimadaFin.toLocaleDateString('es-AR', opcionesFecha);
                 
                 fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
-                document.getElementById('fechaFinCajaContenedor').innerText = `📅 FIN DE CAJA: ${fechaFormateada}`;
+                document.getElementById('fechaFinCajaContenedor').innerText = `⏳ FIN DE CAJA: ${fechaFormateada}`;
             } catch(e) {
-                document.getElementById('fechaFinCajaContenedor').innerText = "📅 FIN DE CAJA: Sábado 14 de Noviembre";
+                document.getElementById('fechaFinCajaContenedor').innerText = "⏳ FIN DE CAJA: Sábado 14 de Noviembre";
             }
         }
+   
         async function enviarDatosASupabase(estForzado) {
             const estFinal = estForzado || (estadoApp.tomadoHoy ? "TOMADO" : "PENDIENTE"); 
             document.getElementById('statusSync').innerText = "Sincronizando bits...";
