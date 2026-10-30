@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Control Caja 30 - v1.3.5 Stable</title><meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Control Caja 30 - v1.3.6 Stable</title><meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; user-select: none; -webkit-user-select: none; }
         body { background: #111; color: #FFF; display: flex; flex-direction: column; min-height: 100vh; justify-content: space-between; padding: 20px; }
@@ -39,7 +40,7 @@
 <body>
     <div id="vistaContenido" style="display: none;">
         <div>
-            <!-- v1.3.4: Interfaz compacta y scannable -->
+            <!-- v1.3.6: Interfaz compacta y scannable -->
             <div id="fechaReal" class="header-fecha">-- / -- / ----</div>
             <div id="contadorToma" class="contador-texto">TOMA 1 / 30</div>
             <div id="alacenaResto" class="alacena-texto">Comprimidos restantes = 29</div>
@@ -57,8 +58,8 @@
     </div>
     <div class="panel-admin-gatillo" onclick="solicitarAccesoAdmin()">• PANEL ADMIN ACCESIBILIDAD •</div>
     
-    <!-- Marca de versión 1.3.5 actualizada para el control de subida -->
-    <div class="version-marca">v.1.3.5</div>
+    <!-- Marca de versión 1.3.6 actualizada para el control de subida -->
+    <div class="version-marca">v.1.3.6</div>
     
     <div id="modalAdmin" class="modal-admin">
         <h2 style="font-size:2rem; text-align:center; margin-bottom:15px; color:#FFD700; text-transform:uppercase;">Panel de Titanio (Córdoba)</h2>
@@ -68,27 +69,6 @@
         <button class="btn-admin-accion" style="color:#5AC8FA;" onclick="adminResetearCaja()">INICIAR CAJA NUEVA</button>
         
         <!-- Bloque contenedor de configuración de Alarmas y Alertas -->
-        <div class="seccion-alarmas-container">
-            <button class="btn-admin-accion" style="color:#FFD700; margin:0; border:none; background:transparent;" onclick="toggleMenuAlarmas()">🔔 CONFIGURAR ALARMAS ▾</button>
-            
-            <div id="menuDesplegableAlarmas" class="menu-desplegable-alarmas">
-                <!-- Subopción 1: Mi Notificación (Aviso de Toma Positiva Activa) -->
-                <div class="subopcion-alarma">
-                    <h4>📩 Mi Notificación (Aviso de Toma Positiva)</h4>
-                    <p>Introduce tu correo donde recibirás las alertas con el horario exacto en que papá tomó la pastilla.</p>
-                    <input type="email" id="emailNotificacionAdmin" class="input-email-admin" placeholder="ejemplo@correo.com">
-                    <button class="btn-guardar-email" onclick="adminGuardarConfiguracionMail()">Aceptar</button>
-                </div>
-                
-                <!-- Subopción 2: Incidencias (Estructura lógica inactiva) -->
-                <div class="subopcion-alarma" style="opacity: 0.4;">
-                    <h4>⚠️ Incidencias (Próxima Versión)</h4>
-                    <p>Circuito de alertas automatizadas por olvido, soplete de audio a las 23:30 hs y botón de posponer 15 min.</p>
-                    <button class="btn-guardar-email" disabled style="background:#444; cursor:not-allowed;">Configurar (Próximamente)</button>
-                </div>
-            </div>
-        </div>
-        
         <div style="color:#FFD700; font-weight:bold; font-size:1.2rem; margin-top:10px; text-align:left;">📜 HISTORIAL DE AUDITORÍA:</div>
         <div id="historialLista" class="historial-box"><div style="color:#555; text-align:center; padding:10px;">Cargando historial de la nube...</div></div>
         <button class="btn-admin-accion" style="background:#111; color:#AAA; border:1px solid #444; margin-top:20px;" onclick="cerrarAdmin()">VOLVER AL MENÚ PRINCIPAL</button>
