@@ -1,0 +1,16 @@
+{
+  "short_name": "Medicacion",
+  "name": "Control Medicacion Papa",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#121212",
+  "display": "standalone",
+  "theme-color": "#121212",
+  "orientation": "portrait"
+}
